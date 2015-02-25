@@ -1,0 +1,6 @@
+<?php
+/**
+* @file
+* Views area handler for getting the base prices of the line items instead of the
+* calculated prices.
+*/

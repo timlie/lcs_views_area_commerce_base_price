@@ -1,0 +1,3 @@
+name = Lcs Views Area Commerce Base Price
+description = Views area handler for commerce line items.
+core = 7.x
