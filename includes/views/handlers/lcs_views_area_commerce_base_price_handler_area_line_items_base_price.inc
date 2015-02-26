@@ -24,8 +24,8 @@ class lcs_views_area_commerce_base_price_handler_area_line_items_base_price exte
 
     // Define an option to control the profit displayed in the summary.
     $options['profit'] = array('default' => array(
-      'amount' => 1,
-      'percentage' => 1,
+      'amount' => 0,
+      'percentage' => 0,
     ));
 
     return $options;
