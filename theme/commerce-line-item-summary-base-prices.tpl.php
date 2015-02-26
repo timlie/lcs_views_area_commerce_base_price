@@ -32,6 +32,11 @@
     <span class="line-item-total-label"><?php print $total_label; ?></span> <span class="line-item-total-raw"><?php print $total; ?></span>
   </div>
   <?php endif; ?>
+  <?php if ($totaldelivery): ?>
+  <div class="line-item-totaldelivery">
+    <span class="line-item-totaldelivery-label"><?php print $totaldelivery_label; ?></span> <span class="line-item-totaldelivery-raw"><?php print $totaldelivery; ?></span>
+  </div>
+  <?php endif; ?>
   <?php if ($totalprofitamount): ?>
     <div class="line-item-profitamount">
       <span class="line-item-profitamount-label"><?php print $totalprofitamount_label; ?></span> <span class="line-item-totalprofitamount-raw"><?php print $totalprofitamount; ?></span>

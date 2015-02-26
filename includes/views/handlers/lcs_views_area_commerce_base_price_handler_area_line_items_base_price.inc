@@ -20,6 +20,7 @@ class lcs_views_area_commerce_base_price_handler_area_line_items_base_price exte
     $options['info'] = array('default' => array(
       'quantity' => 1,
       'total' => 1,
+      'total_delivery' => 0,
     ));
 
     // Define an option to control the profit displayed in the summary.
@@ -55,7 +56,7 @@ class lcs_views_area_commerce_base_price_handler_area_line_items_base_price exte
       '#type' => 'checkboxes',
       '#title' => t('Info'),
       '#description' => t('Select what info you want displayed in the summary.'),
-      '#options' => array('quantity' => t('Item quantity'), 'total' => t('Total')),
+      '#options' => array('quantity' => t('Item quantity'), 'total' => t('Total customer'), 'total_delivery' => t('Total delivery')),
       '#default_value' => $this->options['info'],
     );
 
@@ -136,9 +137,16 @@ class lcs_views_area_commerce_base_price_handler_area_line_items_base_price exte
       }
       if ($this->options['info']['total']) {
         $variables = array(
-            'total_raw' => number_format(commerce_currency_round($total['amount'], $currency), $currency['decimals']),
-            'total_label' => t('Total leverancier:'),
-            'total' => commerce_currency_format($total['amount'], $total['currency_code'], $this->view),
+            'total_raw' => number_format(commerce_currency_round($total_customer['amount'], $currency), $currency['decimals']),
+            'total_label' => t('Total customer:'),
+            'total' => commerce_currency_format($total_customer['amount'], $total_customer['currency_code'], $this->view),
+          ) + $variables;
+      }
+      if ($this->options['info']['total_delivery']) {
+        $variables = array(
+            'totaldelivery_raw' => number_format(commerce_currency_round($total['amount'], $currency), $currency['decimals']),
+            'totaldelivery_label' => t('Total deliverer:'),
+            'totaldelivery' => commerce_currency_format($total['amount'], $total['currency_code'], $this->view),
           ) + $variables;
       }
       if ($this->options['profit']['amount']) {
