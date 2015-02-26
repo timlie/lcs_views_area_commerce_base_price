@@ -4,3 +4,13 @@
 * Views area handler for getting the base prices of the line items instead of the
 * calculated prices.
 */
+
+/**
+ * Implements hook_views_api().
+ */
+function lcs_views_area_commerce_base_price_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module','lcs_views_area_commerce_base_price') . '/includes/views',
+  );
+}
