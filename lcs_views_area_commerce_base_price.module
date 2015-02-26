@@ -14,3 +14,69 @@ function lcs_views_area_commerce_base_price_views_api() {
     'path' => drupal_get_path('module','lcs_views_area_commerce_base_price') . '/includes/views',
   );
 }
+
+/**
+ * Create total amount for line items with base prices.
+ * This code is copied (almost, now with own calculation) from commerce_line_items_total()
+ */
+function lcs_views_area_commerce_base_price_line_items_total($line_items, $types = array()) {
+  // First determine the currency to use for the order total. This code has
+  // been copied and modifed from commerce_order_calculate_total(). It is worth
+  // considering abstracting this code into a separate API function that both
+  // functions can use.
+  $currency_code = commerce_default_currency();
+  $currencies = array();
+
+  // Populate an array of how many line items on the order use each currency.
+  foreach ($line_items as $delta => $line_item_wrapper) {
+    // Convert the line item to a wrapper if necessary.
+    if (!$line_item_wrapper instanceof EntityMetadataWrapper) {
+      $line_item_wrapper = entity_metadata_wrapper('commerce_line_item', $line_item_wrapper);
+    }
+
+    $line_item_currency_code = $line_item_wrapper->commerce_total->currency_code->value();
+
+    if (!in_array($line_item_currency_code, array_keys($currencies))) {
+      $currencies[$line_item_currency_code] = 1;
+    }
+    else {
+      $currencies[$line_item_currency_code]++;
+    }
+  }
+
+  reset($currencies);
+
+  // If only one currency is present, use that to calculate the total.
+  if (count($currencies) == 1) {
+    $currency_code = key($currencies);
+  }
+  elseif (in_array(commerce_default_currency(), array_keys($currencies))) {
+    // Otherwise use the site default currency if it's in the array.
+    $currency_code = commerce_default_currency();
+  }
+  elseif (count($currencies) > 1) {
+    // Otherwise use the first currency in the array.
+    $currency_code = key($currencies);
+  }
+
+  // Sum up the total price of all matching line items.
+  $total = 0;
+
+  foreach ($line_items as $line_item_wrapper) {
+    // Convert the line item to a wrapper if necessary.
+    if (!$line_item_wrapper instanceof EntityMetadataWrapper) {
+      $line_item_wrapper = entity_metadata_wrapper('commerce_line_item', $line_item_wrapper);
+    }
+
+    if (empty($types) || in_array($line_item_wrapper->type->value(), $types)) {
+      dpm($line_item_wrapper);
+      $total += commerce_currency_convert(
+        $line_item_wrapper->commerce_total->amount->value(),
+        $line_item_wrapper->commerce_total->currency_code->value(),
+        $currency_code
+      );
+    }
+  }
+
+  return array('amount' => $total, 'currency_code' => $currency_code);
+}
