@@ -22,6 +22,12 @@ class lcs_views_area_commerce_base_price_handler_area_line_items_base_price exte
       'total' => 1,
     ));
 
+    // Define an option to control the profit displayed in the summary.
+    $options['profit'] = array('default' => array(
+      'amount' => 1,
+      'percentage' => 1,
+    ));
+
     return $options;
   }
 
@@ -51,6 +57,14 @@ class lcs_views_area_commerce_base_price_handler_area_line_items_base_price exte
       '#description' => t('Select what info you want displayed in the summary.'),
       '#options' => array('quantity' => t('Item quantity'), 'total' => t('Total')),
       '#default_value' => $this->options['info'],
+    );
+
+    $form['profit'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Profit'),
+      '#description' => t('Select what profit info you want displayed in the summary.'),
+      '#options' => array('amount' => t('Profit amount'), 'percentage' => t('Profit percentage')),
+      '#default_value' => $this->options['profit'],
     );
   }
 
@@ -95,8 +109,11 @@ class lcs_views_area_commerce_base_price_handler_area_line_items_base_price exte
       // Add total information and the line item summary links.
       $quantity = commerce_line_items_quantity($line_items);
       $total = lcs_views_area_commerce_base_price_line_items_total($line_items);
+      $total_customer = commerce_line_items_total($line_items);
       $currency = commerce_currency_load($total['currency_code']);
 
+      $total_profit_amount = $total_customer['amount'] - $total['amount'];
+      $total_profit_percentage = ($total_profit_amount / $total_customer['amount']) * 100;
       $links = array();
 
       foreach (commerce_line_item_summary_links() as $name => $link) {
@@ -120,8 +137,22 @@ class lcs_views_area_commerce_base_price_handler_area_line_items_base_price exte
       if ($this->options['info']['total']) {
         $variables = array(
             'total_raw' => number_format(commerce_currency_round($total['amount'], $currency), $currency['decimals']),
-            'total_label' => t('Total:'),
+            'total_label' => t('Total leverancier:'),
             'total' => commerce_currency_format($total['amount'], $total['currency_code'], $this->view),
+          ) + $variables;
+      }
+      if ($this->options['profit']['amount']) {
+        $variables = array(
+            'totalprofitamount_raw' => number_format(commerce_currency_round($total_profit_amount, $currency), $currency['decimals']),
+            'totalprofitamount_label' => t('Total profit amount:'),
+            'totalprofitamount' => commerce_currency_format($total_profit_amount, $total_customer['currency_code'], $this->view),
+          ) + $variables;
+      }
+      if ($this->options['profit']['percentage']) {
+        $variables = array(
+            'totalprofitpercentage_raw' => number_format($total_profit_percentage,2) . '%',
+            'totalprofitpercentage_label' => t('Total profit percentage:'),
+            'totalprofitpercentage' => number_format($total_profit_percentage,2) . '%',
           ) + $variables;
       }
 
