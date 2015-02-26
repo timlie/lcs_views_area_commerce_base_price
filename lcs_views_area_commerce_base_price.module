@@ -69,9 +69,13 @@ function lcs_views_area_commerce_base_price_line_items_total($line_items, $types
     }
 
     if (empty($types) || in_array($line_item_wrapper->type->value(), $types)) {
-      dpm($line_item_wrapper);
+      // Own code
+      //dpm($line_item_wrapper->commerce_unit_price->data->value());
+      $price_components = $line_item_wrapper->commerce_unit_price->data->value();
+      $base_price = $price_components['components'][0]['price']['amount'];
+      //dpm($base_price);
       $total += commerce_currency_convert(
-        $line_item_wrapper->commerce_total->amount->value(),
+        $base_price,
         $line_item_wrapper->commerce_total->currency_code->value(),
         $currency_code
       );
