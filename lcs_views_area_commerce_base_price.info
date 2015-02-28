@@ -5,6 +5,7 @@ package = LCS
 dependencies[] = commerce
 dependencies[] = commerce_line_item
 dependencies[] = views
+dependencies[] = lcs_quote_commerce_cart
 
 ; Views handlers
 files[] = includes/views/handlers/lcs_views_area_commerce_base_price_handler_area_line_items_base_price.inc

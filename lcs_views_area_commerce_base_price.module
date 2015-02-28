@@ -6,6 +6,59 @@
 */
 
 /**
+ * Implements hook_menu().
+ */
+function lcs_views_area_commerce_base_price_menu() {
+  $items = array();
+
+  $items['createquote'] = array(
+    'title' => 'Create quote',
+    'page callback' => 'lcs_views_area_commerce_base_price_create_quote',
+    'access arguments' => array('create quote'),
+  );
+
+  return $items;
+}
+
+/**
+ * Loads order and invokes rules event to create quote from this order.
+ */
+function lcs_views_area_commerce_base_price_create_quote() {
+  global $user;
+
+  if ($order = commerce_cart_order_load($user->uid)) {
+    $wrapper = entity_metadata_wrapper('commerce_order', $order);
+    // Only invoke the event if we found product line items.
+    if (commerce_line_items_quantity($wrapper->commerce_line_items, commerce_product_line_item_types()) > 0) {
+      $quotecreation = rules_invoke_event('lcs_quote_commerce_cart_get_quote', $wrapper);
+      // The hook_menu does not accept the redirect from rules. We store it in a
+      // variable and send it manually with drupal_goto()
+      drupal_goto($quotecreation);
+    }
+    else {
+      return t("No products in cart.");
+    }
+  }
+  else {
+    return t("No order created.");
+  }
+}
+
+/**
+ * Implements hook_commerce_line_item_summary_link_info().
+ */
+function lcs_views_area_commerce_base_price_commerce_line_item_summary_link_info() {
+  return array(
+    'createquote' => array(
+      'title' => t('Create quote'),
+      'href' => 'createquote',
+      'attributes' => array('rel' => 'nofollow'),
+      'weight' => 0,
+    ),
+  );
+}
+
+/**
  * Implements hook_views_api().
  */
 function lcs_views_area_commerce_base_price_views_api() {
