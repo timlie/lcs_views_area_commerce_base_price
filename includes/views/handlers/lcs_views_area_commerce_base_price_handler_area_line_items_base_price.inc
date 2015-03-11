@@ -165,7 +165,7 @@ class lcs_views_area_commerce_base_price_handler_area_line_items_base_price exte
           ) + $variables;
       }
 
-      return theme('commerce_line_item_summary', $variables);
+      return theme('lcs_views_area_commerce_line_item_summary', $variables);
     }
 
     return '';
