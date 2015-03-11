@@ -114,7 +114,8 @@ class lcs_views_area_commerce_base_price_handler_area_line_items_base_price exte
       $currency = commerce_currency_load($total['currency_code']);
 
       $total_profit_amount = $total_customer['amount'] - $total['amount'];
-      $total_profit_percentage = ($total_profit_amount / $total_customer['amount']) * 100;
+      // Calculate profit over deliverer price
+      $total_profit_percentage = ($total_profit_amount / $total['amount']) * 100;
       $links = array();
 
       foreach (commerce_line_item_summary_links() as $name => $link) {
