@@ -21,6 +21,34 @@ function lcs_views_area_commerce_base_price_menu() {
 }
 
 /**
+ * Implements hook_block_info().
+ */
+function lcs_views_area_commerce_base_price_block_info() {
+  $blocks['quick_buy_admin_cart'] = array(
+    'info' => t('Quick buy admin cart'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function lcs_views_area_commerce_base_price_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'quick_buy_admin_cart':
+
+      break;
+  }
+
+  return $block;
+}
+
+
+/**
  * Loads order and invokes rules event to create quote from this order.
  */
 function lcs_views_area_commerce_base_price_create_quote() {
