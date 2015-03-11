@@ -40,6 +40,52 @@ function lcs_views_area_commerce_base_price_block_view($delta = '') {
 
   switch ($delta) {
     case 'quick_buy_admin_cart':
+      global $user;
+
+      if ($order = commerce_cart_order_load($user->uid)) {
+        $wrapper = entity_metadata_wrapper('commerce_order', $order);
+        // Only invoke the event if we found product line items.
+        if (commerce_line_items_quantity($wrapper->commerce_line_items, commerce_product_line_item_types()) > 0) {
+          $line_items = $wrapper->commerce_line_items;
+          $quantity = commerce_line_items_quantity($line_items, commerce_product_line_item_types());
+          $total = commerce_line_items_total($line_items);
+          $total_deliverer = lcs_views_area_commerce_base_price_line_items_total($line_items);
+          $currency = commerce_currency_load($total['currency_code']);
+          $total_profit_amount = $total['amount'] - $total_deliverer['amount'];
+          // Calculate profit over deliverer price
+          $total_profit_percentage = ($total_profit_amount / $total_deliverer['amount']) * 100;
+        }
+        else {
+          $line_items = NULL;
+          $quantity = 0;
+          $total = NULL;
+          $total_deliverer = NULL;
+          $currency = NULL;
+          $total_profit_amount = NULL;
+          $total_profit_percentage = NULL;
+        }
+      }
+      else {
+        return t("No order created.");
+      }
+
+      $block['content'] = theme('lcs_views_area_commerce_line_item_summary', array(
+        'quantity_raw' => $quantity,
+        'quantity_label' => format_plural($quantity, 'item', 'items', array(), array('context' => 'product count on a Commerce order')),
+        'quantity' => format_plural($quantity, '1 item', '@count items', array(), array('context' => 'product count on a Commerce order')),
+        'total_raw' => number_format(commerce_currency_round($total['amount'], $currency), $currency['decimals']),
+        'total_label' => t('Total customer:'),
+        'total' => commerce_currency_format($total['amount'], $total['currency_code']),
+        'totaldelivery_raw' => number_format(commerce_currency_round($total_deliverer['amount'], $currency), $currency['decimals']),
+        'totaldelivery_label' => t('Total deliverer:'),
+        'totaldelivery' => commerce_currency_format($total_deliverer['amount'], $total_deliverer['currency_code']),
+        'totalprofitamount_raw' => number_format(commerce_currency_round($total_profit_amount, $currency), $currency['decimals']),
+        'totalprofitamount_label' => t('Total profit amount:'),
+        'totalprofitamount' => commerce_currency_format($total_profit_amount, $total['currency_code']),
+        'totalprofitpercentage_raw' => number_format($total_profit_percentage,2) . '%',
+        'totalprofitpercentage_label' => t('Total profit percentage:'),
+        'totalprofitpercentage' => number_format($total_profit_percentage,2) . '%',
+      ));
 
       break;
   }
@@ -172,7 +218,21 @@ function lcs_views_area_commerce_base_price_line_items_total($line_items, $types
 function lcs_views_area_commerce_base_price_theme() {
   return array(
     'lcs_views_area_commerce_line_item_summary' => array(
-      'variables' => array('quantity_raw' => NULL, 'quantity_label' => NULL, 'quantity' => NULL, 'total_raw' => NULL, 'total' => NULL, 'totaldelivery_raw' => NULL, 'totaldelivery' => NULL, 'totalprofitamount_raw' => NULL, 'totalprofitamount' => NULL, 'totalprofitpercentage_raw' => NULL, 'totalprofitpercentage' => NULL, 'links' => NULL, 'view' => NULL),
+      'variables' => array(
+        'quantity_raw' => NULL,
+        'quantity_label' => NULL,
+        'quantity' => NULL,
+        'total_raw' => NULL,
+        'total' => NULL,
+        'totaldelivery_raw' => NULL,
+        'totaldelivery' => NULL,
+        'totalprofitamount_raw' => NULL,
+        'totalprofitamount' => NULL,
+        'totalprofitpercentage_raw' => NULL,
+        'totalprofitpercentage' => NULL,
+        'links' => NULL,
+        'view' => NULL,
+      ),
       'path' => drupal_get_path('module', 'lcs_views_area_commerce_base_price') . '/theme',
       'template' => 'commerce-line-item-summary-base-prices',
     ),
