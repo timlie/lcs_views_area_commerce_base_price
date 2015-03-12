@@ -142,16 +142,6 @@ function lcs_views_area_commerce_base_price_commerce_line_item_summary_link_info
 }
 
 /**
- * Implements hook_views_api().
- */
-function lcs_views_area_commerce_base_price_views_api() {
-  return array(
-    'api' => 3,
-    'path' => drupal_get_path('module','lcs_views_area_commerce_base_price') . '/includes/views',
-  );
-}
-
-/**
  * Create total amount for line items with base prices.
  * This code is copied (almost, now with own calculation) from commerce_line_items_total()
  */
