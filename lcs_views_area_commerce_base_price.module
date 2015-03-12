@@ -54,6 +54,12 @@ function lcs_views_area_commerce_base_price_block_view($delta = '') {
           $total_profit_amount = $total['amount'] - $total_deliverer['amount'];
           // Calculate profit over deliverer price
           $total_profit_percentage = ($total_profit_amount / $total_deliverer['amount']) * 100;
+
+          foreach (commerce_line_item_summary_links() as $name => $link) {
+            if ($link['access']) {
+              $links[str_replace('_', '-', 'line-item-summary-' . $name)] = $link;
+            }
+          }
         }
         else {
           $line_items = NULL;
@@ -85,6 +91,7 @@ function lcs_views_area_commerce_base_price_block_view($delta = '') {
         'totalprofitpercentage_raw' => number_format($total_profit_percentage,2) . '%',
         'totalprofitpercentage_label' => t('Total profit percentage:'),
         'totalprofitpercentage' => number_format($total_profit_percentage,2) . '%',
+        'links' => theme('links', array('links' => $links, 'attributes' => array('class' => array('links', 'inline')))),
       ));
 
       break;
