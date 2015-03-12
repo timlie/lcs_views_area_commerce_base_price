@@ -25,27 +25,19 @@
   <?php if ($quantity_raw): ?>
   <div class="line-item-quantity">
     <span class="line-item-quantity-raw"><?php print $quantity_raw; ?></span> <span class="line-item-quantity-label"><?php print $quantity_label; ?></span>
-  </div>
   <?php endif; ?>
   <?php if ($total): ?>
-  <div class="line-item-total">
     <span class="line-item-total-label"><?php print $total_label; ?></span> <span class="line-item-total-raw"><?php print $total; ?></span>
-  </div>
   <?php endif; ?>
   <?php if ($totaldelivery): ?>
-  <div class="line-item-totaldelivery">
     <span class="line-item-totaldelivery-label"><?php print $totaldelivery_label; ?></span> <span class="line-item-totaldelivery-raw"><?php print $totaldelivery; ?></span>
-  </div>
   <?php endif; ?>
   <?php if ($totalprofitamount): ?>
-    <div class="line-item-profitamount">
       <span class="line-item-profitamount-label"><?php print $totalprofitamount_label; ?></span> <span class="line-item-totalprofitamount-raw"><?php print $totalprofitamount; ?></span>
-    </div>
   <?php endif; ?>
   <?php if ($totalprofitpercentage): ?>
-    <div class="line-item-profitpercentage">
       <span class="line-item-profitprecentage-label"><?php print $totalprofitpercentage_label; ?></span> <span class="line-item-totalprofitpercentage-raw"><?php print $totalprofitpercentage; ?></span>
-    </div>
+  </div>
   <?php endif; ?>
   <?php print $links; ?>
 </div>
