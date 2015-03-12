@@ -68,7 +68,7 @@ function lcs_views_area_commerce_base_price_block_view($delta = '') {
       else {
         return t("No order created.");
       }
-
+      $block['subject'] = t('Shopping cart');
       $block['content'] = theme('lcs_views_area_commerce_line_item_summary', array(
         'quantity_raw' => $quantity,
         'quantity_label' => format_plural($quantity, 'item', 'items', array(), array('context' => 'product count on a Commerce order')),
