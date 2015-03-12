@@ -94,6 +94,8 @@ function lcs_views_area_commerce_base_price_block_view($delta = '') {
         'links' => theme('links', array('links' => $links, 'attributes' => array('class' => array('links', 'inline')))),
       ));
 
+      drupal_add_css(drupal_get_path('module', 'lcs_views_area_commerce_base_price') . '/css/lcs_views_area_commerce_base_price.css');
+
       break;
   }
 
